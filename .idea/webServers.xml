@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="65a9f078-122c-4981-a92d-99ea68bd9b40" name="linux_51">
+        <fileTransfer rootFolder="/data/projects/fate/python/auto_model" accessType="SFTP" host="10.60.0.51" port="22" sshConfigId="3c77bef5-2167-467f-be37-0108f32a631e" sshConfig="root@10.60.0.51:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

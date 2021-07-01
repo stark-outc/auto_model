@@ -4,7 +4,7 @@
 import json
 import sys
 
-sys.path.append('/data/projects/job_manage')
+sys.path.append('..')
 from utils.mysql_util import MysqlUtil
 from utils.get_model_param import get_model_out, get_x_dims
 from utils.log import logger

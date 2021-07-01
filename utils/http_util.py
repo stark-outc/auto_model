@@ -1,7 +1,7 @@
 # coding:utf-8
 
 
-from config import TIME_SLEEP, TIME_OUT, HOST
+from utils.config import TIME_SLEEP, TIME_OUT, HOST
 
 import time
 import requests

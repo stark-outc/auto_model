@@ -3,12 +3,12 @@
 
 import json
 import sys
-
-sys.path.append('/data/projects/fate/python/auto_model')
+import os
+sys.path.append('..')
 from utils.mysql_util import MysqlUtil
 from utils.log import logger
 import json
-from utils.config import ZK_DIR,all_table
+from utils.config import ZK_DIR,ALL_TABLE
 mu = MysqlUtil()
 
 
@@ -47,7 +47,7 @@ def parse_predict_jobid_func():
         select f_create_date,f_job_id, f_runtime_conf from t_job where f_job_id in ('%s')
     ''' % need_parse_id_str
     flag, rows, need_parse_id_list = mu.select(conf_id)
-    _all_table = json.load(open(ZK_DIR+all_table,'r'))
+    _all_table = json.load(open(ZK_DIR+ALL_TABLE,'r'))
     for need_parse_id_i in need_parse_id_list:
         logger.info('parse job id %s' % (need_parse_id_i[0]))
         f_create_date,f_job_id, f_runtime_conf = need_parse_id_i
@@ -55,8 +55,15 @@ def parse_predict_jobid_func():
         if job_runtime_conf.get('job_parameters').get('job_type')!='predict':
             continue
         try:
+
             guest_data_comp = json.loads(f_runtime_conf).get('role_parameters').get('guest').get('args').get('data').get('data_0')
             host_data_comp = json.loads(f_runtime_conf).get('role_parameters').get('host').get('args').get('data').get('data_0')
+            if guest_data_comp is None or host_data_comp is None:
+                guest_data_comp = json.loads(f_runtime_conf).get('role_parameters').get('guest').get('args').get(
+                    'data').get('train_data_0')
+                host_data_comp = json.loads(f_runtime_conf).get('role_parameters').get('host').get('args').get(
+                    'data').get('train_data_0')
+
             all_host_table = _all_table.get('host_table')
             month_lst=[]
             for k,v in all_host_table.items():

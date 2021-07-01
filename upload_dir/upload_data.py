@@ -5,7 +5,7 @@ import sys
 sys.path.append('/data/projects/fate/python/auto_model')
 import re
 from utils.log import logger
-from utils.file_util import read_data
+from utils.file_util import read_data,write_data
 from utils.config import ZK_DIR
 def zk_upload(proj_name):
     lists = os.listdir(ZK_DIR+str(proj_name))
@@ -30,12 +30,10 @@ def zk_upload(proj_name):
                 data['stat_month']=str(int(str(upload_month)[:4])-1)+'12'
             else:
                 data['stat_month']=str(int(upload_month)-1)
-            json_data = json.dumps(data)
+            json_data = json.dumps(data,indent=4)
         except:
             logger.error(f'{upload_month} rewrite setting.josn failed')
-        with open('/data/projects/fate/python/auto_model/config/setting.json','w') as fw:
-            fw.write(json_data)
-        fw.close()
+        write_data('/data/projects/fate/python/auto_model/config/setting.json',json_data,need_n=True)
         os.system("""source /data/projects/fate/bin/init_env.sh && python /data/projects/fate/python/auto_model/run_task.py -f upload -r guest -t intersect""")
         time.sleep(20)
         os.system("""source /data/projects/fate/bin/init_env.sh && cd /data/projects/fate/python/auto_model && nohup python -u run_task.py -f intersect > /data/projects/fate/python/auto_model/upload_dir/%s/%s.log &"""%(proj_name,str(upload_month)))

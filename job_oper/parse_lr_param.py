@@ -4,7 +4,7 @@
 import json
 import sys
 
-sys.path.append('/data/projects/job_manage')
+sys.path.append('..')
 from utils.mysql_util import MysqlUtil
 from utils.get_model_param import get_lr_model_out, get_x_dims
 from utils.log import logger
@@ -86,23 +86,33 @@ def parse_lr_param_func():
         train_auc = ks_auc_dict.get('train_auc', 0)
         validate_auc = ks_auc_dict.get('validate_auc', 0)
         try:
-            penalty = lr_Param.get('penalty')
-            alpha = lr_Param.get('alpha')
-            max_iter = lr_Param.get('max_iter')
             early_stopping_rounds = lr_Param.get('early_stopping_rounds')
-            learning_rate = lr_Param.get('learning_rate')
             sqn_param_update_interval_L = lr_Param.get('sqn_param').get('update_interval_L')
             sqn_param_update_memory_M = lr_Param.get('sqn_param').get('memory_M')
             sqn_param_update_sample_size = lr_Param.get('sqn_param').get('sample_size')
+        except :
+            early_stopping_rounds = None
+            sqn_param_update_interval_L = None
+            sqn_param_update_memory_M = None
+            sqn_param_update_sample_size = None
+        try:
+            penalty = lr_Param.get('penalty')
+            alpha = lr_Param.get('alpha')
+            max_iter = lr_Param.get('max_iter')
+            # early_stopping_rounds = lr_Param.get('early_stopping_rounds')
+            learning_rate = lr_Param.get('learning_rate')
+            # sqn_param_update_interval_L = lr_Param.get('sqn_param').get('update_interval_L')
+            # sqn_param_update_memory_M = lr_Param.get('sqn_param').get('memory_M')
+            # sqn_param_update_sample_size = lr_Param.get('sqn_param').get('sample_size')
         except:
             penalty = None
             alpha = None
             max_iter = None
-            early_stopping_rounds = None
-            sqn_param_update_interval_L = None
-            sqn_param_update_memory_M = None
+            # early_stopping_rounds = None
+            # sqn_param_update_interval_L = None
+            # sqn_param_update_memory_M = None
             learning_rate = None
-            sqn_param_update_sample_size = None
+            # sqn_param_update_sample_size = None
 
         insert_lr_param_data(
             [create_date,job_id, train_data, component_name, x_dims, iv_min, penalty,

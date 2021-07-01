@@ -27,7 +27,7 @@ def get_host_data(proj_name):
     for i in host_data:
         host_name_dict['host_table'][proj_name].update(i)
     logger.info('get_host_table success')
-    write_data(HOST_TABLE_CONF+f'{proj_name}_host_table.json',json.dumps(host_name_dict))
+    write_data(HOST_TABLE_CONF+f'{proj_name}_host_table.json',json.dumps(host_name_dict,indent=4))
 if __name__ == '__main__':
     proj_name = sys.argv[1]
     get_host_data(proj_name)

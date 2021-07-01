@@ -2,14 +2,15 @@
 
 import sys
 
-sys.path.append('/data/projects/job_manage')
+sys.path.append('..')
 import re
 import os
 import time
 import json
 import datetime
 from utils.job_outtime_util import check_job_run_too_long, get_debug_path, add_run_too_long_job
-from config import HOST, GUEST_ID, RUN_FAILED_FILE, SUBMIT_JOB_PARAMS, FAILED_JOB_RE_ADD, GUEST_ROLE, RUN_FAILED_JOB_TIME_LIMIT, RESTART_SH
+from utils.config import HOST,RUNNING_NUM
+from utils.config import GUEST_ID, RUN_FAILED_FILE, SUBMIT_JOB_PARAMS, FAILED_JOB_RE_ADD, GUEST_ROLE, RUN_FAILED_JOB_TIME_LIMIT, RESTART_SH
 from utils.http_util import post, get, put
 from utils.file_util import write_data, read_data
 from utils.log import logger
@@ -20,6 +21,26 @@ def update_desc(job_id, note):
     data = '{"job_id":"%s","role":"guest","party_id":"%s","notes":"%s"}'%(job_id, GUEST_ID, note)
     put(url_update_desc, data=data)
 
+
+def board_status(func):
+    def wrapper(*args, **kwargs):
+        url_status = 'http://%s:8080/job/query/status' % HOST
+        r = get(url_status)
+        if r.status_code != 200:
+            raise ConnectionAbortedError
+        r_json = r.json()
+        running_num = len([i for i in r_json.get('data') if i.get('fRole') == 'guest' and i.get("fStatus") == "running"])
+        waiting_num = len([i for i in r_json.get('data') if i.get('fRole') == 'guest' and i.get("fStatus") =="waiting"])
+        to_deal_num = running_num+waiting_num
+        if to_deal_num > RUNNING_NUM :
+            logger.info('board running job is full')
+            raise Exception
+        else:
+            logger.info(f'board has {to_deal_num} jobs ,now submit new job')
+            res = func(*args,**kwargs)
+            return res
+
+    return wrapper
 
 def get_fate_best_iteration(job_id='202007020659016481695', component_name=None):
     if component_name==None:
@@ -103,9 +124,10 @@ def query_status():
         raise ConnectionAbortedError
     r_json = r.json()
 
-    running_num = len([i for i in r_json.get('data') if i.get('fRole') == GUEST_ROLE and i.get("fStatus")!="waiting"])
+    running_num = len([i for i in r_json.get('data') if i.get('fRole') == 'guest' and i.get("fStatus") == "running"])
      
     return running_num
+
 
 def get_waiting_job():
     url_status = 'http://%s:8080/job/query/status' % HOST
@@ -115,7 +137,7 @@ def get_waiting_job():
         raise ConnectionAbortedError
     r_json = r.json()
 
-    waiting_job = [i.get('fJobId') for i in r_json.get('data') if i.get('fRole') == GUEST_ROLE and i.get("fStatus") =="waiting"]
+    waiting_job = [i.get('fJobId') for i in r_json.get('data') if i.get('fRole') == 'guest' and i.get("fStatus") =="waiting"]
 
     return waiting_job
 
@@ -439,5 +461,6 @@ if __name__ == '__main__':
     # get_fate_best_iteration("2020071502495300804020")
     # get_fate_iv_num()
     #print (get_waiting_job())
-    get_lr_model_out(job_id='2020122416210371398093', component_name='evaluation_0')
-    a = 1
+    # get_lr_model_out(job_id='2020122416210371398093', component_name='evaluation_0')
+    # a = 1
+    print(query_status())
