@@ -1,0 +1,246 @@
+{
+    "components": {
+        "union_0": {
+            "module": "Union",
+            "input": {
+                "data": {
+                    "data": [
+                        "args.data_0"
+                    ],
+                    "data_1": [
+                        "args.data_1"
+                    ],
+		    "data_2": [
+                        "args.data_2"
+                    ],
+			"data_3": [
+                        "args.data_3"
+                    ],
+			"data_4": [
+                        "args.data_4"
+                    ],
+			"data_5": [
+                        "args.data_5"
+                    ],
+			"data_6": [
+                        "args.data_6"
+                    ]
+                }
+            },
+            "output": {
+                "data": [
+                    "train_data"
+                ]
+            },
+            "need_deploy": false
+        },
+        "union_1": {
+            "module": "Union",
+            "input": {
+				"data":{
+                   "data": [
+                        "args.data_7"
+                    ],
+                    "data_1": [
+                        "args.data_8"
+                    ],
+					"data_2": [
+                        "args.data_9"
+                    ],
+					"data_3": [
+                        "args.data_10"
+                    ],
+					"data_4": [
+                        "args.data_11"
+                    ],
+					"data_5": [
+                        "args.data_12"
+                    ],
+					"data_6": [
+                        "args.data_13"
+                    ]
+				}
+			},
+            "output": {
+                "data": [
+                    "eval_data"
+                ]
+            },
+            "need_deploy": false
+        },
+        "dataio_0": {
+            "module": "DataIO",
+            "input": {
+                "data": {
+                    "data": [
+                        "union_0.train_data"
+                    ]
+                }
+            },
+            "output": {
+                "data": [
+                    "train"
+                ],
+                "model": [
+                    "dataio"
+                ]
+            },
+            "need_deploy": true
+        },
+        "dataio_1": {
+            "module": "DataIO",
+            "input": {
+                "data": {
+                    "data": [
+                        "union_1.eval_data"
+                    ]
+                },
+                "model": [
+                    "dataio_0.dataio"
+                ]
+            },
+            "output": {
+                "data": [
+                    "eval"
+                ],
+                "model": [
+                    "dataio"
+                ]
+            },
+            "need_deploy": false
+        },
+        "intersection_0": {
+            "module": "Intersection",
+            "input": {
+                "data": {
+                    "data": [
+                        "dataio_0.train"
+                    ]
+                }
+            },
+            "output": {
+                "data": [
+                    "train"
+                ]
+            },
+            "need_deploy": true
+        },
+        "intersection_1": {
+            "module": "Intersection",
+            "input": {
+                "data": {
+                    "data": [
+                        "dataio_1.eval"
+                    ]
+                }
+            },
+            "output": {
+                "data": [
+                    "eval"
+                ]
+            },
+            "need_deploy": false
+        },
+        "hetero_feature_binning_0": {
+            "module": "HeteroFeatureBinning",
+            "input": {
+                "data": {
+                    "data": [
+                        "intersection_0.train"
+                    ]
+                }
+            },
+            "output": {
+                "data": [
+                    "transform_data"
+                ],
+                "model": [
+                    "binning_model"
+                ]
+            },
+            "need_deploy": false
+        },
+        "hetero_feature_selection_0": {
+            "module": "HeteroFeatureSelection",
+            "input": {
+                "data": {
+                    "data": [
+                        "intersection_0.train"
+                    ]
+                },
+                "isometric_model": [
+                    "hetero_feature_binning_0.binning_model"
+                ]
+            },
+            "output": {
+                "data": [
+                    "train"
+                ],
+                "model": [
+                    "selected"
+                ]
+            },
+            "need_deploy": true
+        },
+        "hetero_feature_selection_1": {
+            "module": "HeteroFeatureSelection",
+            "input": {
+                "data": {
+                    "data": [
+                        "intersection_1.eval"
+                    ]
+                },
+                "model": [
+                    "hetero_feature_selection_0.selected"
+                ]
+            },
+            "output": {
+                "data": [
+                    "eval"
+                ],
+                "model": [
+                    "selected"
+                ]
+            },
+            "need_deploy": false
+        },
+        "secureboost_0": {
+            "module": "HeteroSecureBoost",
+            "input": {
+                "data": {
+                    "train_data": [
+                        "hetero_feature_selection_0.train"
+                    ],
+                    "eval_data": [
+                        "hetero_feature_selection_1.eval"
+                    ]
+                }
+            },
+            "output": {
+                "data": [
+                    "train"
+                ],
+                "model": [
+                    "secureboost"
+                ]
+            },
+            "need_deploy": true
+        },
+        "evaluation_0": {
+            "module": "Evaluation",
+            "input": {
+                "data": {
+                    "data": [
+                        "secureboost_0.train"
+                    ]
+                }
+            },
+            "output": {
+                "data": [
+                    "evaluate"
+                ]
+            },
+            "need_deploy": true
+        }
+    }
+}

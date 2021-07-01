@@ -1,0 +1,8 @@
+
+{"guest_table": {"namespace": "hzph", "train_table": "zbs_new_train", "validate_table": "zbs_new_valid"}, "host_table": {"host_id": 10017, "namespace": "host#10017#all#train_input", "train_table": "zbs_new_data_v1", "validate_table": "zbs_new_data_v1"}, "features_type":"old","method":"lr", "iv_value_threshold":0.02, "learning_rate":0.2, "num_trees":15,"max_trees":3, "early_stopping_rounds":10, "max_iter":10}
+
+{"guest_table": {"namespace": "hzph", "train_table": "zbs_new_train", "validate_table": "zbs_new_valid"}, "host_table": {"host_id": 10017, "namespace": "host#10017#all#train_input", "train_table": "zbs_new_data_v1", "validate_table": "zbs_new_data_v1"}, "method":"lr", "iv_value_threshold":0.02, "learning_rate":0.2, "num_trees":15,"max_trees":3, "early_stopping_rounds":10, "max_iter":10}
+
+{"guest_table": {"namespace": "hzph", "train_table": "zbs_new_train", "validate_table": "zbs_new_valid"}, "host_table": {"host_id": 10017, "namespace": "host#10017#all#train_input", "train_table": "zbs_new_data_v1", "validate_table": "zbs_new_data_v1"}, "features_type":"old", "iv_value_threshold":0.02, "learning_rate":0.3, "num_trees":15,"max_trees":3, "early_stopping_rounds":10}
+
+{"guest_table": {"namespace": "hzph", "train_table": "zbs_new_train", "validate_table": "zbs_new_valid"}, "host_table": {"host_id": 10017, "namespace": "host#10017#all#train_input", "train_table": "zbs_new_data_v1", "validate_table": "zbs_new_data_v1"}, "iv_value_threshold":0.02, "learning_rate":0.3, "num_trees":15,"max_trees":3, "early_stopping_rounds":10}
